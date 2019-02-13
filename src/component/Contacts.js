@@ -1,46 +1,30 @@
 import React, { Component } from "react";
 import Contact from "./Contact";
+import { Consumer } from "../context";
 
 export default class Contacts extends Component {
   constructor() {
     super();
-    this.state = {
-      contacts: [
-        {
-          id: 1,
-          name: "vinod",
-          email: "vinod@olivetech.net",
-          phone: "9494437121"
-        },
-        {
-          id: 2,
-          name: "rakesh",
-          email: "rakesh@olivetech.net",
-          phone: "9000000000"
-        },
-        {
-          id: 3,
-          name: "chinnu",
-          email: "chinnu@olivetech.net",
-          phone: "6000000000"
-        }
-      ]
-    };
   }
+  deleteContact = id => {
+    console.log("vhjghjghjg");
+    console.log("hello id", id);
+    //const { contacts } = this.state;
+  };
   render() {
-    const { contacts } = this.state;
     return (
-      <div>
-        {contacts.map(objects => (
-          <Contact
-            key={objects.id}
-            id={objects.id}
-            name={objects.name}
-            email={objects.email}
-            phone={objects.phone}
-          />
-        ))}
-      </div>
+      <Consumer>
+        {value => {
+          const { contacts } = value;
+          return (
+            <React.Fragment>
+              {contacts.map(objects => (
+                <Contact key={objects.id} contact={objects} />
+              ))}
+            </React.Fragment>
+          );
+        }}
+      </Consumer>
     );
   }
 }
