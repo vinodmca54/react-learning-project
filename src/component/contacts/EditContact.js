@@ -4,27 +4,30 @@ import axios from "axios";
 import TextInpuGroup from "../layout/TextInpuGroup";
 import uuid from "uuid";
 
-
-class Addcontact extends Component {
+class EditContact extends Component {
   state = {
     name: "",
     email: "",
     phone: ""
   };
+
+  async componentDidMount() {
+    const { id } = this.props.match.params;
+    const res = await axios.get(
+      `https://jsonplaceholder.typicode.com/users/${id}`
+    );
+    console.log("ressss", res);
+    const contact = res.data;
+    console.log("contact", contact);
+    this.setState({
+      name: contact.name,
+      email: contact.email,
+      phone: contact.phone
+    });
+  }
   submit = async (dispatch, e) => {
     e.preventDefault();
     const { name, email, phone } = this.state;
-    const newContact = {
-      name,
-      email,
-      phone
-    };
-
-    const res = await axios.post(
-      "https://jsonplaceholder.typicode.com/users",
-      newContact
-    );
-    dispatch({ type: "ADD_CONTACT", payload: res.data });
 
     // console.log(this.state);
     // fetch("http://localhost:7777/contact", {
@@ -37,11 +40,23 @@ class Addcontact extends Component {
     //   alert("fsdfsdf", result);
     //   console.log("hello", result);
     // });
+    const updContact = {
+      name,
+      email,
+      phone
+    };
+    const { id } = this.props.match.params;
+    const res = await axios.put(
+      `https://jsonplaceholder.typicode.com/users/${id}`,
+      updContact
+    );
+    dispatch({ type: "UPDATE_CONTACT", payload: res.data });
     this.setState({
       name: "",
       email: "",
       phone: ""
     });
+    this.props.history.push("/");
   };
   onChange = e => this.setState({ [e.target.name]: e.target.value });
 
@@ -54,7 +69,7 @@ class Addcontact extends Component {
           const { dispatch } = value;
           return (
             <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
+              <div className="card-header">Edit Contact</div>
               <div className="card-body">
                 <form onSubmit={this.submit.bind(this, dispatch)}>
                   {/* <div className="form-group">
@@ -113,7 +128,7 @@ class Addcontact extends Component {
                   </div> */}
                   <input
                     type="submit"
-                    value="Add Contact"
+                    value="Update Contact"
                     className="btn btn-light btn-block"
                   />
                 </form>
@@ -125,4 +140,4 @@ class Addcontact extends Component {
     );
   }
 }
-export default Addcontact;
+export default EditContact;
